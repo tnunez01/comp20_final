@@ -1,37 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register</title>
+    <link rel="icon" href="assets/logo.png" />
+    <link rel="stylesheet" type="text/css" href="general.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  </head>
+  <body style="text-align: center">
+    <h1>Register</h1>
+    <form id="registerForm">
+      <label for="email">email</label>
+      <input type="text" id="email" name="email" required />
+      <br />
+      <br />
+      <label for="password">password</label>
+      <input type="password" id="password" name="password" required />
+      <br />
+      <br />
+      <div id="result"></div>
 
-<head>
-  <title>Register - Nextwatch</title>
-  <meta charset="UTF-8">
-  <meta name="keywords"
-    content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+      <input type="submit" value="Register" />
+    </form>
 
-  <link rel="icon" href="logo.png" />
-
-  <style type="text/css">
-        body {
-            background-color: #1A1A1A;
+    <script>
+      const registerForm = document.getElementById("registerForm");
+      const result = document.getElementById("result");
+      const register = async (e) => {
+        e.preventDefault();
+        const url = "/api/user/register";
+        const data = {
+          email: registerForm.email.value,
+          password: registerForm.password.value,
+        };
+        const rawRes = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+        const res = await rawRes.json();
+        if (rawRes.status == 200) {
+          result.innerHTML =
+            "Successdully resgitered! Directing you to the login page...";
+          setTimeout(function () {
+            window.location.href = "/login.html";
+          }, 2500);
+        } else {
+          result.innerHTML = res.message;
         }
-        #reg {
-            width: 500px;
-            height: 400px;
-            margin: auto auto auto auto;
-            box-shadow: 5px 10px;
-        }
-  </style>
-
-<body>  
-    <div id="reg" style="display: flexbox; justify-content: column;">
-        <img src="text.png" style="width: 500px;">
-        <input type="text" value="First Name">
-        <input type="text" value="Last Name">
-        <input type="text" value="Username">
-        <input type="email" value="Email">
-        <input type="text" value="Password">
-        <input type="text" value="Conform Password">
-    </div>
-</body>
-
+      };
+      registerForm.addEventListener("submit", register);
+    </script>
+  </body>
 </html>
